@@ -1,3 +1,6 @@
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 import java.util.Scanner;
 
 public class CitationMaker {
@@ -6,7 +9,11 @@ public class CitationMaker {
     public void start() {
         System.out.print("Enter ISBN: ");
         String isbn = SCAN.nextLine();
-        DataGetter.getData("isbn",isbn);
+        JSONObject searchData = DataGetter.getData("isbn",isbn);
+        JSONArray books = searchData.getJSONArray("items");
+        JSONObject book = (JSONObject) books.get(0);
+
+
     }
 
 }

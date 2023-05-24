@@ -10,15 +10,13 @@ public class DataGetter {
 
     private static final String KEY = "AIzaSyBao4Y8SpShFYHJuzgBU_rPPZHlA-JSbeE";
     private static final String BASE = "https://www.googleapis.com/books/v1";
-    public static void getData(String query, String search) {
+    public static JSONObject getData(String query, String search) {
         System.out.println("Getting book info...");
 
        String url =  "https://www.googleapis.com/books/v1/volumes?q=+"+query+":"+search+"&key="+KEY;
-       System.out.println("URL:\n" + url);
+       //System.out.println("URL:\n" + url);
 
        String urlResponse = "sample text";
-
-
 
         try {
             URI myUri = URI.create(url); // creates a URI object from the url string
@@ -30,7 +28,10 @@ public class DataGetter {
             System.out.println(e.getMessage());
         }
 
-        System.out.println();
+        //System.out.println();
         System.out.println(urlResponse);
+
+        return new JSONObject(urlResponse);
     }
+
 }
