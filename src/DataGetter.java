@@ -28,9 +28,6 @@ public class DataGetter {
             System.out.println(e.getMessage());
         }
 
-        //System.out.println();
-        System.out.println(urlResponse);
-
         return new JSONObject(urlResponse);
     }
 
