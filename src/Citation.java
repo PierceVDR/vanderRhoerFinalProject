@@ -25,7 +25,7 @@ public class Citation {
     private String number;
     private String publisher;
     private String dateOfPublication;
-    private String locationOfPublication;
+    private String locationOfPublisher;
     private String dateOfAccess;
 
 
@@ -37,6 +37,15 @@ public class Citation {
     }
 
     public String getAuthor(){return formattedAuthor;}
+    public String getTitle(){return title;}
+    public String getContainer(){return container;}
+    public String getOtherContributers(){return otherContributers;}
+    public String getVersion(){return version;}
+    public String getNumber(){return number;}
+    public String getPublisher(){return publisher;}
+    public String getDateOfPublication(){return dateOfPublication;}
+    public String getLocationOfPublisher(){return locationOfPublisher;}
+    public String getDateOfAccess(){return dateOfAccess;}
 
     public void start() {
         System.out.print("Enter ISBN: ");
@@ -46,6 +55,7 @@ public class Citation {
         search="9780451524935";  // 1984
         search = "9780717802418"; // Communist Manifesto
         search = "9780323857024"; // (Has Three Authors)
+        search = "9780738536668"; // Should have series
         query="isbn";
 
         JSONObject searchData = DataGetter.getData(query,search);
@@ -53,10 +63,18 @@ public class Citation {
         JSONObject book = (JSONObject) books.get(0);
         bookInfo=(JSONObject) book.get("volumeInfo");
 
-        generateAuthor();
+        System.out.println(book);
 
-        //System.out.println(bookInfo);
-        //System.out.println(generateAuthor());
+        generateAll();
+
+        printInfo();
+    }
+
+    public void generateAll(){
+        generateAuthor();
+        generateTitle();
+        // Don't generateContainer
+
     }
 
     public String generateAuthor(){
@@ -84,10 +102,39 @@ public class Citation {
         return getAuthor();
     }
 
+    public String generateTitle(){
+        title=bookInfo.getString("title");
+
+
+        return title;
+    }
+
+    // Stub
+    public String generateContainer(){
+        container=null;
+
+        return getContainer();
+    }
+
 
     private String formatAuthor(String rawAuthor) {
         System.out.println("//PLACEHOLDER//");
         return rawAuthor;
+    }
+
+    public void printInfo() {
+        System.out.println("BOOK INFO:");
+
+        System.out.println("       (FORMATTED) AUTHOR: " + formattedAuthor);
+        System.out.println("       TITLE: " + title);
+        System.out.println("       CONTAINER " + container);
+        System.out.println("       OTHER CONTRIBUTORS: " + otherContributers);
+        System.out.println("       VERSION: " + version);
+        System.out.println("       NUMBER: " + number);
+        System.out.println("       PUBLISHER: " + publisher);
+        System.out.println("       DATE OF PUBLICATION: " + dateOfPublication);
+        System.out.println("       LOCATION OF PUBLISHER: " + locationOfPublisher);
+        System.out.println("       DATE OF ACCESS: " + dateOfAccess);
     }
 
 }
