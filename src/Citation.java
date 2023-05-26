@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Citation {
     private static final Scanner SCAN = new Scanner(System.in);
+    private static final String[] MONTHS = {"Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Sept.", "Oct.", "Nov.", "Dec."};
 
 
     // API Instance Variables:
@@ -48,6 +49,7 @@ public class Citation {
     public String getDateOfAccess(){return dateOfAccess;}
 
     public void start() {
+
         System.out.print("Enter ISBN: ");
         search = SCAN.nextLine();
 
@@ -58,7 +60,7 @@ public class Citation {
         search = "9780738536668"; // Should have series
         query="isbn";
 
-        JSONObject searchData = DataGetter.getData(query,search);
+        JSONObject searchData = DataGetter.getSearch(query,search);
         JSONArray books = searchData.getJSONArray("items");
         JSONObject book = (JSONObject) books.get(0);
         bookInfo=(JSONObject) book.get("volumeInfo");
@@ -73,8 +75,14 @@ public class Citation {
     public void generateAll(){
         generateAuthor();
         generateTitle();
-        // Don't generateContainer
-
+        // No generateContainer
+        // No generateOtherContributors
+        // No generateVersion
+        // No generateNumber
+        generatePublisher();
+        generateDateOfPublication();
+        // No generateLocationOfPublisher
+        // Do not generateDateOfAccess
     }
 
     public String generateAuthor(){
@@ -104,17 +112,30 @@ public class Citation {
 
     public String generateTitle(){
         title=bookInfo.getString("title");
-
-
-        return title;
+        return getTitle();
     }
 
-    // Stub
-    public String generateContainer(){
-        container=null;
-
-        return getContainer();
+    public String generatePublisher(){
+        publisher=bookInfo.getString("publisher");
+        return getPublisher();
     }
+
+    public String generateDateOfPublication(){
+        dateOfPublication=bookInfo.getString("publishedDate");
+        return getDateOfPublication();
+    }
+
+    public String generateDateOfAccess(){
+        // https://www.javatpoint.com/java-get-current-date
+        java.util.Date dateObj = new java.util.Date();
+
+        String day = Integer.toString( dateObj.getDate() );
+        String month = MONTHS[ dateObj.getMonth() ];
+        String year = Integer.toString( 1900+dateObj.getYear() );
+
+        return day +" "+ month +" "+ year;
+    }
+
 
 
     private String formatAuthor(String rawAuthor) {
