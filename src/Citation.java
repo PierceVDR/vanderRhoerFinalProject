@@ -1,6 +1,7 @@
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Citation {
@@ -21,7 +22,7 @@ public class Citation {
     private String formattedAuthor;
     private String title;
     private String container;
-    private String otherContributers;
+    private String otherContributors;
     private String version;
     private String number;
     private String publisher;
@@ -40,7 +41,7 @@ public class Citation {
     public String getAuthor(){return formattedAuthor;}
     public String getTitle(){return title;}
     public String getContainer(){return container;}
-    public String getOtherContributers(){return otherContributers;}
+    public String getOtherContributors(){return otherContributors;}
     public String getVersion(){return version;}
     public String getNumber(){return number;}
     public String getPublisher(){return publisher;}
@@ -56,8 +57,9 @@ public class Citation {
         //OVERRIDES FOR TESTING:
         search="9780451524935";  // 1984
         search = "9780717802418"; // Communist Manifesto
-        search = "9780323857024"; // (Has Three Authors)
-        search = "9780738536668"; // Should have series
+        search = "9780205297665"; // The example for Two Authors
+        //search = "9780323857024"; // The example for Three Authors
+        //search = "9780738536668"; // Should have series
         query="isbn";
 
         JSONObject searchData = DataGetter.getSearch(query,search);
@@ -96,12 +98,12 @@ public class Citation {
             if (numAuthors==1) { // If there is one author...
                 formattedAuthor = formatAuthor( authorOne );
             } else {
-                String authorTwo = formatAuthor( (String) authors.get(1) );
+                String unformattedAuthorTwo = (String) authors.get(1);
 
                 if (numAuthors==2) {  // If there are two authors...
-                    formattedAuthor = authorOne +", and "+ authorTwo;
+                    formattedAuthor = authorOne +", and "+ unformattedAuthorTwo; // This is NOT a mistake: You are not supposed to put the second author's name in LastName, FirstName format
                 } else { // If there are three or more authors...
-                    formattedAuthor = authorOne +", "+ authorTwo +", et al";
+                    formattedAuthor = authorOne + ", et al";
                 }
 
             }
@@ -139,8 +141,17 @@ public class Citation {
 
 
     private String formatAuthor(String rawAuthor) {
-        System.out.println("//PLACEHOLDER//");
-        return rawAuthor;
+        // Used the following stackoverflow questions to find an easier way of doing this
+        // https://stackoverflow.com/questions/12656203/how-to-add-spaces-only-between-catenated-values-using-java
+        // https://stackoverflow.com/questions/11001720/get-only-part-of-an-array-in-java
+
+        String[] words = rawAuthor.split(" ");
+        int len = words.length;
+
+        String firstNamePart = String.join(" ", Arrays.copyOfRange(words, 0, (len+1)/2));
+        String lastNamePart = String.join(" ", Arrays.copyOfRange(words, (len+1)/2, len));
+
+        return lastNamePart +", "+ firstNamePart;
     }
 
     public void printInfo() {
@@ -149,7 +160,7 @@ public class Citation {
         System.out.println("       (FORMATTED) AUTHOR: " + formattedAuthor);
         System.out.println("       TITLE: " + title);
         System.out.println("       CONTAINER " + container);
-        System.out.println("       OTHER CONTRIBUTORS: " + otherContributers);
+        System.out.println("       OTHER CONTRIBUTORS: " + otherContributors);
         System.out.println("       VERSION: " + version);
         System.out.println("       NUMBER: " + number);
         System.out.println("       PUBLISHER: " + publisher);
