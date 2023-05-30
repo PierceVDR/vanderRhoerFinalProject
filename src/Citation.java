@@ -34,8 +34,11 @@ public class Citation {
     // Settings Instance Variables:
     private boolean includeDateOfAccess;
 
-    public Citation() {
+    public Citation(String isbn) {
         includeDateOfAccess=false;
+
+        query="isbn";
+        search=isbn;
     }
 
     public String getAuthor(){return formattedAuthor;}
@@ -49,7 +52,17 @@ public class Citation {
     public String getLocationOfPublisher(){return locationOfPublisher;}
     public String getDateOfAccess(){return dateOfAccess;}
 
-    public void start() {
+    public String createCitation() {
+        JSONObject searchData = DataGetter.getSearch(query,search);
+        JSONArray books = searchData.getJSONArray("items");
+        JSONObject book = (JSONObject) books.get(0);
+        bookInfo=(JSONObject) book.get("volumeInfo");
+
+        generateAll();
+
+        return getCitation();
+    }
+    public void test() {
 
         System.out.print("Enter ISBN: ");
         search = SCAN.nextLine();
@@ -84,7 +97,7 @@ public class Citation {
         generatePublisher();
         generateDateOfPublication();
         // No generateLocationOfPublisher
-        // Do not generateDateOfAccess
+        generateDateOfAccess();
     }
 
     public String generateAuthor(){
@@ -98,9 +111,8 @@ public class Citation {
             if (numAuthors==1) { // If there is one author...
                 formattedAuthor = formatAuthor( authorOne );
             } else {
-                String unformattedAuthorTwo = (String) authors.get(1);
-
                 if (numAuthors==2) {  // If there are two authors...
+                    String unformattedAuthorTwo = (String) authors.get(1);
                     formattedAuthor = authorOne +", and "+ unformattedAuthorTwo; // This is NOT a mistake: You are not supposed to put the second author's name in LastName, FirstName format
                 } else { // If there are three or more authors...
                     formattedAuthor = authorOne + ", et al";
@@ -145,13 +157,47 @@ public class Citation {
         // https://stackoverflow.com/questions/12656203/how-to-add-spaces-only-between-catenated-values-using-java
         // https://stackoverflow.com/questions/11001720/get-only-part-of-an-array-in-java
 
-        String[] words = rawAuthor.split(" ");
-        int len = words.length;
+        if (rawAuthor.contains(",")) {
+            return rawAuthor;
+        } else {
+            String[] words = rawAuthor.split(" ");
+            int len = words.length;
+            String firstNamePart = String.join(" ", Arrays.copyOfRange(words, 0, (len + 1) / 2));
+            String lastNamePart = String.join(" ", Arrays.copyOfRange(words, (len + 1) / 2, len));
 
-        String firstNamePart = String.join(" ", Arrays.copyOfRange(words, 0, (len+1)/2));
-        String lastNamePart = String.join(" ", Arrays.copyOfRange(words, (len+1)/2, len));
+            return lastNamePart + ", " + firstNamePart;
+        }
+    }
 
-        return lastNamePart +", "+ firstNamePart;
+    public String getCitation(){
+        String txt = "";
+
+        if (formattedAuthor!=null) {txt += formattedAuthor+". ";}
+
+        if (title!=null) {txt += title+". ";}
+
+        if (container!=null) {txt += container+", ";}
+
+        if (otherContributors!=null) {txt += otherContributors+", ";}
+
+        if (version!=null) {txt += version+", ";}
+
+        if (number!=null) {txt += number+", ";}
+
+        if (publisher!=null) {txt += publisher+", ";}
+
+        if (dateOfPublication!=null) {txt += dateOfPublication+", ";}
+
+        if (locationOfPublisher!=null) {txt += locationOfPublisher+", ";}
+
+        txt = txt.substring(0, txt.length()-2) + "."; // Replace last comma (and space) with period.
+
+        if (dateOfAccess!=null && includeDateOfAccess) {txt += " Accessed " + dateOfAccess + ".";}
+
+        System.out.println(txt);
+
+
+        return txt;
     }
 
     public void printInfo() {
