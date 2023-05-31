@@ -7,6 +7,7 @@ public class MainGUI extends JFrame implements ActionListener {
     private JTextArea citationField;
     private JFormattedTextField codeField;
     private JLabel directionsLabel;
+    private JCheckBox includeDateOfAccessCheckBox;
 
     private Citation citation;
 
@@ -16,7 +17,7 @@ public class MainGUI extends JFrame implements ActionListener {
 
     public void start(){
         setContentPane(mainPanel);
-        setTitle("Citation Generator");
+        setTitle("Citationator™");
         setSize(1024,600);
         setLocation(0,0);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -28,19 +29,32 @@ public class MainGUI extends JFrame implements ActionListener {
 
     private void addListeners(){
         codeField.addActionListener(this);
+        includeDateOfAccessCheckBox.addActionListener(this);
     }
 
     private void createCitation(String text) {
-        citation = new Citation(text);
+        citation = new Citation(text, includeDateOfAccessCheckBox.isSelected());
         citationField.setText(Characters.INDENT + citation.createCitation());
+    }
+
+    private void updateCitation(){
+        citationField.setText(Characters.INDENT + citation.getCitation());
+    }
+
+    private String processCode(String code) {
+        code=code.replaceAll("-","");
+        code=code.replaceAll(" ","");
+        return code;
     }
 
     @Override
     public void actionPerformed(ActionEvent e){
         Object sourceObj = e.getSource();
         if (sourceObj==codeField) {
-            JFormattedTextField source = (JFormattedTextField) sourceObj;
-            createCitation(source.getText());
+            createCitation( processCode(codeField.getText()) );
+        } else if (sourceObj==includeDateOfAccessCheckBox) {
+            citation.setIncludeDateOfAccess(includeDateOfAccessCheckBox.isSelected());
+            updateCitation();
         }
     }
 }

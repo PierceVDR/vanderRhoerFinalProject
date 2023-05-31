@@ -41,6 +41,15 @@ public class Citation {
         search=isbn;
     }
 
+    public Citation(String isbn, boolean includeDateOfAccess) {
+        this.includeDateOfAccess=includeDateOfAccess;
+
+        query="isbn";
+        search=isbn;
+    }
+    public void setIncludeDateOfAccess(boolean includeDateOfAccess) {
+        this.includeDateOfAccess=includeDateOfAccess;
+    }
     public String getAuthor(){return formattedAuthor;}
     public String getTitle(){return title;}
     public String getContainer(){return container;}
@@ -72,7 +81,8 @@ public class Citation {
         search = "9780717802418"; // Communist Manifesto
         search = "9780205297665"; // The example for Two Authors
         //search = "9780323857024"; // The example for Three Authors
-        //search = "9780738536668"; // Should have series
+        //search = "9780738536668"; // Long Island, Images of America - Should have series (doesn't)
+        search = "9781843172833"; // No author
         query="isbn";
 
         JSONObject searchData = DataGetter.getSearch(query,search);
@@ -130,12 +140,20 @@ public class Citation {
     }
 
     public String generatePublisher(){
-        publisher=bookInfo.getString("publisher");
+        if (bookInfo.has("publisher")) {
+            publisher=bookInfo.getString("publisher");
+        }
         return getPublisher();
     }
 
     public String generateDateOfPublication(){
-        dateOfPublication=bookInfo.getString("publishedDate");
+        String rawDate=bookInfo.getString("publishedDate");
+        int dashIdx = rawDate.indexOf("-");
+        if (dashIdx!=-1) { // Date is in yyyy-mm-dd format
+            dateOfPublication=rawDate.substring(0,dashIdx); // We only want year
+        } else {
+            dateOfPublication=rawDate;
+        }
         return getDateOfPublication();
     }
 
@@ -147,7 +165,9 @@ public class Citation {
         String month = MONTHS[ dateObj.getMonth() ];
         String year = Integer.toString( 1900+dateObj.getYear() );
 
-        return day +" "+ month +" "+ year;
+        dateOfAccess =  day +" "+ month +" "+ year;
+
+        return dateOfAccess;
     }
 
 
@@ -157,7 +177,7 @@ public class Citation {
         // https://stackoverflow.com/questions/12656203/how-to-add-spaces-only-between-catenated-values-using-java
         // https://stackoverflow.com/questions/11001720/get-only-part-of-an-array-in-java
 
-        if (rawAuthor.contains(",")) {
+        if (rawAuthor.contains(",") || !rawAuthor.contains(" ")) {
             return rawAuthor;
         } else {
             String[] words = rawAuthor.split(" ");
@@ -193,9 +213,6 @@ public class Citation {
         txt = txt.substring(0, txt.length()-2) + "."; // Replace last comma (and space) with period.
 
         if (dateOfAccess!=null && includeDateOfAccess) {txt += " Accessed " + dateOfAccess + ".";}
-
-        System.out.println(txt);
-
 
         return txt;
     }
