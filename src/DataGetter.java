@@ -28,6 +28,7 @@ public class DataGetter {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return  response.body();
         } catch (Exception e) {
+            System.out.println("ERROR:");
             System.out.println(e.getMessage());
             return null;
         }

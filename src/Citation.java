@@ -63,6 +63,9 @@ public class Citation {
 
     public String createCitation() {
         JSONObject searchData = DataGetter.getSearch(query,search);
+        if (!searchData.has("items")) {
+            return null; // Invalid search
+        }
         JSONArray books = searchData.getJSONArray("items");
         JSONObject book = (JSONObject) books.get(0);
         bookInfo=(JSONObject) book.get("volumeInfo");

@@ -34,7 +34,12 @@ public class MainGUI extends JFrame implements ActionListener {
 
     private void createCitation(String text) {
         citation = new Citation(text, includeDateOfAccessCheckBox.isSelected());
-        citationField.setText(Characters.INDENT + citation.createCitation());
+        String citationTxt = citation.createCitation();
+        if (citationTxt==null) {
+            citationField.setText("INVALID ISBN");
+            return;
+        }
+        citationField.setText(Characters.INDENT + citationTxt);
     }
 
     private void updateCitation(){
