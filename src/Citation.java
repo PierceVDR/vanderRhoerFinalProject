@@ -197,7 +197,7 @@ public class Citation {
 
         if (formattedAuthor!=null) {txt += formattedAuthor+". ";}
 
-        if (title!=null) {txt += title+". ";}
+        if (title!=null) {txt += "<i>"+title+"</i>. ";}
 
         if (container!=null) {txt += container+", ";}
 

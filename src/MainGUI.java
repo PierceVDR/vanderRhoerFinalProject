@@ -4,7 +4,7 @@ import java.awt.event.ActionListener;
 
 public class MainGUI extends JFrame implements ActionListener {
     private JPanel mainPanel;
-    private JTextArea citationField;
+    private JTextPane citationField;
     private JFormattedTextField codeField;
     private JLabel directionsLabel;
     private JCheckBox includeDateOfAccessCheckBox;
@@ -33,17 +33,23 @@ public class MainGUI extends JFrame implements ActionListener {
     }
 
     private void createCitation(String text) {
+        if (text.equals("")) {
+            citationField.setText("ENTER ISBN");
+            return;
+        }
         citation = new Citation(text, includeDateOfAccessCheckBox.isSelected());
         String citationTxt = citation.createCitation();
         if (citationTxt==null) {
+            includeDateOfAccessCheckBox.setEnabled(false);
             citationField.setText("INVALID ISBN");
             return;
         }
-        citationField.setText(Characters.INDENT + citationTxt);
+        includeDateOfAccessCheckBox.setEnabled(true);
+        citationField.setText(citationTxt);
     }
 
     private void updateCitation(){
-        citationField.setText(Characters.INDENT + citation.getCitation());
+        citationField.setText(citation.getCitation());
     }
 
     private String processCode(String code) {
