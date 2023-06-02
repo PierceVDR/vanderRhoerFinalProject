@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 public class MainGUI extends JFrame implements ActionListener {
     private JPanel mainPanel;
     private JTextPane citationField;
+    // Where I found you can format the text with HTML (which I needed to do in order to italicize the title in a citation):
+    // http://www.java2s.com/Tutorials/Java/Swing_How_to/JTextPane/Style_JTextPane_with_HTML_and_CSS.htm
     private JFormattedTextField codeField;
     private JLabel directionsLabel;
     private JCheckBox includeDateOfAccessCheckBox;
