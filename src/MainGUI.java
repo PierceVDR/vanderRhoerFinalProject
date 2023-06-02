@@ -40,11 +40,9 @@ public class MainGUI extends JFrame implements ActionListener {
         citation = new Citation(text, includeDateOfAccessCheckBox.isSelected());
         String citationTxt = citation.createCitation();
         if (citationTxt==null) {
-            includeDateOfAccessCheckBox.setEnabled(false);
             citationField.setText("INVALID ISBN");
             return;
         }
-        includeDateOfAccessCheckBox.setEnabled(true);
         citationField.setText(citationTxt);
     }
 
@@ -64,8 +62,10 @@ public class MainGUI extends JFrame implements ActionListener {
         if (sourceObj==codeField) {
             createCitation( processCode(codeField.getText()) );
         } else if (sourceObj==includeDateOfAccessCheckBox) {
-            citation.setIncludeDateOfAccess(includeDateOfAccessCheckBox.isSelected());
-            updateCitation();
+            if (citation!=null) {
+                citation.setIncludeDateOfAccess(includeDateOfAccessCheckBox.isSelected());
+                updateCitation();
+            }
         }
     }
 }

@@ -34,13 +34,6 @@ public class Citation {
     // Settings Instance Variables:
     private boolean includeDateOfAccess;
 
-    public Citation(String isbn) {
-        includeDateOfAccess=false;
-
-        query="isbn";
-        search=isbn;
-    }
-
     public Citation(String isbn, boolean includeDateOfAccess) {
         this.includeDateOfAccess=includeDateOfAccess;
 
@@ -73,31 +66,6 @@ public class Citation {
         generateAll();
 
         return getCitation();
-    }
-    public void test() {
-
-        System.out.print("Enter ISBN: ");
-        search = SCAN.nextLine();
-
-        //OVERRIDES FOR TESTING:
-        search="9780451524935";  // 1984
-        search = "9780717802418"; // Communist Manifesto
-        search = "9780205297665"; // The example for Two Authors
-        //search = "9780323857024"; // The example for Three Authors
-        //search = "9780738536668"; // Long Island, Images of America - Should have series (doesn't)
-        search = "9781843172833"; // No author
-        query="isbn";
-
-        JSONObject searchData = DataGetter.getSearch(query,search);
-        JSONArray books = searchData.getJSONArray("items");
-        JSONObject book = (JSONObject) books.get(0);
-        bookInfo=(JSONObject) book.get("volumeInfo");
-
-        System.out.println(book);
-
-        generateAll();
-
-        printInfo();
     }
 
     public void generateAll(){
