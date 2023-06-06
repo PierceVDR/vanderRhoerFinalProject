@@ -10,6 +10,7 @@ public class MainGUI extends JFrame implements ActionListener {
     private JFormattedTextField codeField;
     private JLabel directionsLabel;
     private JCheckBox includeDateOfAccessCheckBox;
+    private JLabel legalClaimer;
 
     private Citation citation;
 
